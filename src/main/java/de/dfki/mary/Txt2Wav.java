@@ -2,12 +2,20 @@ package de.dfki.mary;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.Locale;
+import java.util.Set;
 
+import javax.sound.sampled.AudioFileFormat;
+import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
 
 import marytts.LocalMaryInterface;
+import marytts.datatypes.MaryDataType;
 import marytts.exceptions.MaryConfigurationException;
 import marytts.exceptions.SynthesisException;
+import marytts.modules.synthesis.Voice;
 import marytts.util.data.audio.MaryAudioUtils;
 
 import org.apache.commons.cli.*;
@@ -81,11 +89,34 @@ public class Txt2Wav {
 		LocalMaryInterface mary = null;
 		try {
 			mary = new LocalMaryInterface();
+			// default configuration through setReasonableDefaults :
+			//inputType = MaryDataType.TEXT;
+			//outputType = MaryDataType.AUDIO;
+			//locale = Locale.US;
+			//voice = Voice.getDefaultVoice(locale);
+			//setAudioFileFormatForVoice();
+			//effects = null;
+			//style = null;
+			//outputTypeParams = null;
+			//isStreaming = false;
 		} catch (MaryConfigurationException e) {
 			System.err.println("Could not initialize MaryTTS interface: " + e.getMessage());
 			throw e;
 		}
 
+		Set<String> voices = mary.getAvailableVoices(Locale.FRENCH);
+		Iterator<String> iter = voices.iterator();
+		while(iter.hasNext()) {
+			System.out.println(iter.next());
+		}
+		
+		// Set configuration
+		Voice voice = Voice.getVoice("upmc-pierre-hsmm");
+		
+		mary.setVoice(voice.getName());
+		mary.setAudioEffects("F0Add(f0Add:-40.0;)+F0Scale(f0Scale:0.8;)+Rate(durScale:1.0;)");
+		mary.setInputType(MaryDataType.TEXT.name());
+		
 		// synthesize
 		AudioInputStream audio = null;
 		try {

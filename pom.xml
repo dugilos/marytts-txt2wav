@@ -30,8 +30,8 @@
 		</dependency>
 		<dependency>
 			<groupId>de.dfki.mary</groupId>
-			<artifactId>voice-cmu-slt-hsmm</artifactId>
-			<version>5.2-beta3</version>
+			<artifactId>voice-upmc-pierre-hsmm</artifactId>
+			<version>5.2</version>
 		</dependency>
 	</dependencies>
 
